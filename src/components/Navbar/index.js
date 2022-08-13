@@ -1,6 +1,8 @@
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AppContext } from '../../App';
 const Navbar = () => {
-  const user = null;
+  const store = useContext(AppContext).state;
   return (
     <nav className="navbar navbar-expand-sm bg-light navbar-light px-4">
       <div className="container-fluid">
@@ -21,42 +23,42 @@ const Navbar = () => {
         id="mynavbar"
       >
         <ul className="navbar-nav me-auto">
-          {user && (
+          {store.userDetails.length && (
             <li className="nav-item">
               <Link className="nav-link" to="/home">
                 Home
               </Link>
             </li>
           )}
-          {user && (
+          {store.userDetails.length && (
             <li className="nav-item">
               <Link className="nav-link" to="/create">
                 Create
               </Link>
             </li>
           )}
-          {user && (
+          {store.userDetails.length && (
             <li className="nav-item">
               <Link className="nav-link" to="/about">
                 About
               </Link>
             </li>
           )}
-          {!user && (
+          {!store.userDetails.length && (
             <li className="nav-item">
               <Link className="nav-link" to="/login">
                 Login
               </Link>
             </li>
           )}
-          {!user && (
+          {!store.userDetails.length && (
             <li className="nav-item">
               <Link className="nav-link" to="/register">
                 Register
               </Link>
             </li>
           )}
-          {user && (
+          {store.userDetails.length && (
             <li className="nav-item">
               <Link className="nav-link" to="/logout">
                 Logout

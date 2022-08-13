@@ -1,26 +1,25 @@
-import { useState } from 'react';
+import { useContext } from 'react';
+import { AppContext } from '../App';
+import {
+  REGISTER_REQUEST_FAILURE,
+  REGISTER_REQUEST_INITIATE,
+  REGISTER_REQUEST_SUCCESS,
+} from '../store/Types/actionTypes';
 
 const useRegister = () => {
-  const [data, setData] = useState({
-    loading: false,
-    error: null,
-    userData: null,
-  });
+  const store = useContext(AppContext);
+
   const register = async (payload) => {
-    setData((prev) => {
-      return {
-        ...prev,
-        loading: true,
-      };
-    });
+    store.dispatch({ type: REGISTER_REQUEST_INITIATE });
     let allUsers = await fetch('http://localhost:3000/users', {
       method: 'GET',
     });
     allUsers = await allUsers.json();
     allUsers = allUsers.filter((user) => user.email === payload.email)[0];
     if (allUsers) {
-      setData((prev) => {
-        return { ...prev, loading: false, error: 'User already present' };
+      store.dispatch({
+        type: REGISTER_REQUEST_FAILURE,
+        error: 'User already register',
       });
     } else {
       const response = await fetch('http://localhost:3000/users', {
@@ -31,17 +30,19 @@ const useRegister = () => {
         body: JSON.stringify(payload),
       });
       if (!response.ok) {
-        setData((prev) => {
-          return { ...prev, isLoading: false, error: response.statusText };
+        store.dispatch({
+          type: REGISTER_REQUEST_FAILURE,
+          error: 'Error while registering',
         });
       } else {
         const allUserData = await response.json();
-        setData((prev) => {
-          return { ...prev, isLoading: false, userData: allUserData };
+        store.dispatch({
+          type: REGISTER_REQUEST_SUCCESS,
+          payload: allUserData,
         });
       }
     }
   };
-  return { register, ...data };
+  return { register };
 };
 export default useRegister;

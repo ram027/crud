@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useId } from 'react';
 import { Link } from 'react-router-dom';
+import { AppContext } from '../../../App';
 import useLogin from '../../../hooks/useLogin';
 const Login = () => {
   const [loginState, setLoginState] = useState({
@@ -8,14 +9,15 @@ const Login = () => {
     password: '',
   });
   const id = useId();
-  const { login, loading, error } = useLogin();
+  const { login } = useLogin();
+  const store = useContext(AppContext).state;
   const submit = async (e) => {
     e.preventDefault();
     await login(loginState.email, loginState.password);
   };
   return (
     <div className="d-flex justify-content-center my-5">
-      {!loading && !error && (
+      {!store.loading && !store.error && (
         <div className="card w-50 p-4">
           <form onSubmit={submit}>
             <h3>Login </h3>
@@ -60,8 +62,8 @@ const Login = () => {
           </form>
         </div>
       )}
-      {loading && <div>...loading</div>}
-      {error && <div className="danger">{error}</div>}
+      {store.loading && <div>...loading</div>}
+      {store.error && <div className="text-danger">{store.error}</div>}
     </div>
   );
 };
